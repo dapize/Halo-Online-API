@@ -1,18 +1,18 @@
 import mongoose from 'mongoose';
 import Logger from 'jet-logger';
 
-const connect = () => {
+const connect = ( uri: string ) => {
   mongoose.connect(
-    `${process.env.DB_URI}`,
+    uri,
     {
       keepAlive: true
     },
     ( err ) => {
       if ( err ) {
-        Logger.Err('Error connecting to the DB');
-        return Logger.Err(err)
+        Logger.err('Error connecting to the DB');
+        return Logger.err(err)
       }
-      Logger.Info('¡DB connection successfully!')
+      Logger.info('¡DB connection successfully!')
     }
   )
 

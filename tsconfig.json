@@ -26,7 +26,11 @@
       "@controllers": ["controllers"],
       "@controllers/*": ["controllers/*"],
       "@middlewares": ["middlewares"],
-      "@middlewares/*": ["middlewares/*"]
+      "@middlewares/*": ["middlewares/*"],
+      "@models": ["models"],
+      "@models/*": ["models/*"],
+      "@config": ["config"],
+      "@config/*": ["config/*"]
     }
   },
   "exclude": [ "node_modules", "public", "tsconfig.json", "jest.config.js", "dist" ],

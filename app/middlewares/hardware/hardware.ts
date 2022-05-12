@@ -1,5 +1,5 @@
-import { createValidator } from 'express-joi-validation';
 import Joi from 'joi';
+import { createValidator } from 'express-joi-validation';
 
 export const hardware = () => {
   const validator = createValidator();
@@ -17,8 +17,6 @@ export const hardware = () => {
       height: Joi.number().required(),
       width: Joi.number().required()
     }),
-    os: Joi.string().required(),
-    osType: Joi.string().required(),
     osVersion: Joi.string().required(),
     ram: Joi.number().required(),
     video: Joi.object({

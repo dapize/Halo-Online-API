@@ -1,3 +1,4 @@
+import path from 'path';
 import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
@@ -5,10 +6,11 @@ import cors from 'cors';
 import Logger from 'jet-logger';
 import morgan from 'morgan';
 import { createStream } from 'rotating-file-stream';
-import path from 'path';
 import { routerFiles } from '@routers/files';
 import { routerHardware } from '@routers/hardware';
+import connect from '@config/db';
 
+// cheking env file
 const config = dotenv.config();
 if (config.error) Logger.err('Missing environment variables');
 
@@ -16,8 +18,10 @@ if (config.error) Logger.err('Missing environment variables');
 declare global {
   var __basedir: string;
 }
-
 global.__basedir = __dirname;
+
+// init DB
+connect(`${process.env.DB_URI}`);
 
 // Init Server
 const app = express();
