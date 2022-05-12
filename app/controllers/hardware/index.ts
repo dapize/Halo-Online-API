@@ -1,0 +1,1 @@
+export { regHardware } from './hardware';
