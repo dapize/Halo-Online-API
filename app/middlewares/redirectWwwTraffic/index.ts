@@ -1,0 +1,1 @@
+export { redirectWwwTraffic } from './redirectWwwTraffic';

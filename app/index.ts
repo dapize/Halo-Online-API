@@ -1,13 +1,17 @@
 import path from 'path';
+import fs from 'fs';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import https from 'https';
+import compression from 'compression';
 import Logger from 'jet-logger';
 import morgan from 'morgan';
 import { createStream } from 'rotating-file-stream';
 import { routerFiles } from '@routers/files';
 import { routerHardware } from '@routers/hardware';
+import { redirectWwwTraffic } from '@middlewares/redirectWwwTraffic';
 import connect from '@config/db';
 
 // cheking env file
@@ -23,31 +27,43 @@ global.__basedir = __dirname;
 // init DB
 connect(`${process.env.DB_URI}`);
 
+// some configs
+const shouldCompress = (req: Request, res: Response) => {
+  if (req.headers['x-no-compression']) return false
+  return compression.filter(req, res)
+}
+
+// set up plain http server
+const http = express();
+http.get('*', (req, res) => {
+  res.redirect('https://' + req.headers.host + req.url);
+})
+http.use(helmet({ contentSecurityPolicy: false }));
+http.use(compression({ filter: shouldCompress }))
+http.use(redirectWwwTraffic);
+http.listen(80, () => {
+  console.log('Init server without SLL');
+});
+
 // Init Server
 const app = express();
-const port = process.env.PORT;
-
-// Base middlewares
 app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') }));
+app.use(express.json());
 const accessLogStream = createStream('access.log', {
   interval: '1d', // rotate daily
   path: path.join(__dirname, 'log')
 })
 app.use(morgan('combined', { stream: accessLogStream }))
-
-// Cors and JSON
-app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') }));
-app.use(express.json());
-
-// Routes
+app.use(compression({ filter: shouldCompress }))
+app.use(redirectWwwTraffic);
 app.use( routerFiles );
 app.use( routerHardware );
-
-// Static files
 app.use('/', express.static('public'));
 
-// Listen Server
-app.listen(port, () => {
-  Logger.info(`Server running and listening on port ${port}`);
-});
-
+const httpsServer = https.createServer({
+  ca: fs.readFileSync(__dirname + "/ssl/ca_bundle.crt", 'utf8'),
+  key: fs.readFileSync(__dirname + "/ssl/private.key", 'utf8'),
+  cert: fs.readFileSync(__dirname + "/ssl/certificate.crt", 'utf8')
+}, app);
+httpsServer.listen(443, () => console.log('Init server with SSL'));
