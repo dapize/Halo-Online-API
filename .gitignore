@@ -13,7 +13,6 @@ dist/
 
 # production
 /build
-/app/ssl
 
 # misc
 .DS_Store
@@ -29,4 +28,5 @@ yarn-error.log*
 .env
 
 /public/game
-/app/log
+/src/log
+/ssl
