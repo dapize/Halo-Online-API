@@ -9,7 +9,7 @@
     "start": "node ./dist/index.js",
     "start:production": "node index.js",
     "build": "rm -rf ./dist && tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist && cp -rf ./ssl/ ./dist && rm -rf ./dist/log/",
-    "eject": "rm -rf .editorconfig .gitignore LICENCE nodemon.json tsconfig.json yarn.lock .env.example && npm run build && mv ./dist/* ../ && rm -rf ./src/"
+    "eject": "npm run build && rm -rf .editorconfig .gitignore LICENCE nodemon.json tsconfig.json yarn.lock .env.example && cp -R ./dist/* ./ && rm -rf ./src/ ./dist/"
   },
   "keywords": [],
   "author": "",
