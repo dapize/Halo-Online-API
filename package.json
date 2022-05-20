@@ -4,12 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./app/index.ts",
-    "start:dev": "ts-node ./app/index.ts",
-    "start": "node ./dist/index.js",
-    "start:production": "node index.js",
-    "build": "rm -rf ./dist && tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist && cp -rf ./ssl/ ./dist && rm -rf ./dist/log/",
-    "eject": "npm run build && rm -rf .editorconfig .gitignore LICENCE nodemon.json tsconfig.json yarn.lock .env.example && cp -R ./dist/* ./ && rm -rf ./src/ ./dist/"
+    "dev": "nodemon ./src/index.ts",
+    "start": "ts-node ./src/index.ts",
+    "build": "rm -rf ./dist && tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./app -o ./dist && cp -rf ./app/ssl/ ./dist"
   },
   "keywords": [],
   "author": "",
